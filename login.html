@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Log In - Pastebin Clone</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+  <div class="container">
+    <h2>Log In</h2>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+
+    <!-- reCAPTCHA -->
+    <div class="g-recaptcha" data-sitekey="6LfiP8ArAAAAAFZfUkLHR5tju--SjLW1-bY0QUcG"></div>
+
+    <div id="error" class="error"></div>
+    <button onclick="login()">Log In</button>
+    <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+  </div>
+
+  <script>
+    function login() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const captchaResponse = grecaptcha.getResponse();
+      const errorDiv = document.getElementById("error");
+
+      if (!email || !password) {
+        errorDiv.textContent = "All fields are required.";
+        return;
+      }
+
+      if (!captchaResponse) {
+        errorDiv.textContent = "Please complete the CAPTCHA.";
+        return;
+      }
+
+      let users = JSON.parse(localStorage.getItem("users")) || [];
+      const found = users.find(u => u.email === email && u.password === password);
+
+      if (!found) {
+        errorDiv.textContent = "Invalid email or password.";
+        return;
+      }
+
+      localStorage.setItem("registeredUser", JSON.stringify(found));
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
