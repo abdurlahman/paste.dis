@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pastebin Clone</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Welcome to Pastebin Clone</h2>
+    <div id="pasteList"></div>
+    <textarea id="pasteText" rows="10" placeholder="Write your paste here..."></textarea>
+    <button onclick="savePaste()">Save Paste</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("registeredUser"));
+    if (!user) {
+      window.location.href = "login.html";
+    }
+
+    function loadPastes() {
+      const pastes = JSON.parse(localStorage.getItem("pastes")) || [];
+      const pasteList = document.getElementById("pasteList");
+      pasteList.innerHTML = "";
+      pastes.reverse().forEach(p => {
+        const div = document.createElement("div");
+        div.className = "paste";
+        div.textContent = `${p.user}: ${p.text}`;
+        pasteList.appendChild(div);
+      });
+    }
+
+    loadPastes();
+
+    function savePaste() {
+      const text = document.getElementById("pasteText").value.trim();
+      if (!text) return;
+      const pastes = JSON.parse(localStorage.getItem("pastes")) || [];
+      pastes.push({ user: user.username, text });
+      localStorage.setItem("pastes", JSON.stringify(pastes));
+      document.getElementById("pasteText").value = "";
+      loadPastes();
+    }
+
+    function logout() {
+      localStorage.removeItem("registeredUser");
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>
